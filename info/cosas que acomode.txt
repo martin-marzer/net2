@@ -1,0 +1,66 @@
+.net 2da entrega ATENCION MUCHACHOS ojos de papel
+
+Carpeta Aseguradora.Aplicacion
+Entidades:
+Las entidades ya no tienen los contructores sin parametros, como mucho podes usar el constructor donde recibe como parametros
+todas los valores para sus propiedades, en el constructor se hacen las validaciones si lo q recibe no es valido se queda el
+valor x default de la propiedad.
+
+ID no tiene que tener un valor x default "-1" no se pone nada, EF Core automaticamente al identificar q es un campo llamado
+id de tipo int les proporciona su valor correspondiente. Ademas el set debe ser privado, solo la clase misma podra setear el
+id(lo necesita EF Core para configuracion) nosotros nunca vamos a tocar el id de la Entidad propia.
+
+
+hay propiedades que tienen valores por default arbitrarios para establecer q si el objeto a agregar/modificar pone valores
+invalidos directamente se queden con los valores x default, caso de la propiedad AnioDeFabricacion de la clase Vehiculo
+que vale 1990, en caso de introducir valores mayores al año actual y menores que 1990 queda en 1990.
+
+Interfaces:
+Aca solo modifique el archivo IrepositorioTitular.cs para modificar el metodo siguiente: 
+List <Titular> ListarTitularesConSusVehiculos(); antes estaba implementado ahora es un metodo a implementar
+
+UseCases:
+antes por cada entidad se creaban todos los casos de uso, pero para cada accion siempre se declaraba el campo readonly
+repositorio que era de tipo IRepositorioEntidad, y se le definia un valor en el constructor.
+ahora por cada entidad se crea un usecase general que es una clase abstracta, ahora para cada accion se va a heredar del
+"usecase Entidad" que tiene la propiedad Repositorio de tipo IRepositorioEntidad,y el constructor q le da valor a esa 
+propiedad, entonces directamense se llama al constructor base.
+
+
+
+
+
+//////////////////////////////////////////////////////////////////////
+Carpeta Aseguradora.Repositorios
+AseguradoraContext.cs
+este es el encargado de definir la base de datos, en base a las clases que defino como propiedad, esas seran mis tablas.
+ademas tengo para implementar los metodos de configuracion, y cuando creo la base de datos.
+
+en el metodo de configuracion lo unico q hago es darle la ruta donde se va a trabajar con la BD.
+
+al metodo que se ejecuta para crear el Modelo lo uso para configurar campos que quiero que sean unicos,
+por ejemplo de Titular/Tercero el campo DNI, si se repite se genera excepcion.
+Ademas configuro las relaciones entre las entidades, esto tengo un diagrama pero deberia corroborarlo.
+
+
+RepositoriosSQLITE
+todos los repositorios son iguales. todos hacen sus respectivas validaciones. les puedo mandar como parametros objetos
+nulos (si es de tipo referencia) que en ese caso tira excepcion manual. 
+por ejemplo si quiero agregar un objeto de la entidad Titular y recibo un valor null, directamente termina todo 
+en la pagina web no le voy a mandar null, si en los forms no pongo nada se estableceran valores x defecto
+siguiendo con lo de pagina web, el ejemplo de la clase 12, primero lista todos los elementos de una entidad y a cada elem
+les proporciona la capacidad de eliminar y modificar. O sea q esos metodos solo son validos y funcionan si previamente
+liste los elementos los guarde en una variable, busco ahi el objeto y lo modifico/elimino. (esto para probarlo sin blazor
+se hace manual).
+
+
+
+
+
+//////////////////////////////////////////////////////////////////////
+Carpeta Aseguradora.UI
+aca no hice todavia pero la idea es hacer la pagina medio parecida a la de la clase 12.
+Ademas preguntar donde va lo de journal mode
+
+como pingo son las relaciones entre las entidades??
+
