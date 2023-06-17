@@ -9,6 +9,7 @@ public class Poliza
     public DateTime FechaDeFinDeVigencia {get;set;} = DateTime.Now.AddYears(1); 
     public int VehiculoId {get;set;}
 
+    public List<Siniestro>? listaSiniestros {get; set;}
     
     public Poliza(int vehiculoId, double valorAsegurado, String? franquicia,String? tipoDeCobertura, DateTime fechaDeInicioDeVigencia, DateTime fechaDeFinDeVigencia){
         if (vehiculoId < 1) throw new Exception("los vehiculos son identificados a partir del id 1");

@@ -31,44 +31,9 @@ public class AseguradoraContext : DbContext
             .HasIndex(t => t.Dni)
             .IsUnique();
 
-        modelBuilder.Entity<Tercero>()
-            .HasIndex(t => t.Dni)
-            .IsUnique();
-
         //dominios unicos (patentes), si se repite hay excepcion
         modelBuilder.Entity<Vehiculo>()
             .HasIndex(v => v.Dominio)
             .IsUnique();
-
-        //la relacion de cada vehiculo con el titular la hace automaticamente (no se xq) ( es xq vehiculo tiene TitularId y titular tiene una lista de vehiculos)
-
-        modelBuilder.Entity<Vehiculo>()
-            .HasOne<Titular>()
-            .WithMany(t => t.listaVehiculos)
-            .HasForeignKey(v => v.TitularId)
-            .OnDelete(DeleteBehavior.Cascade);
-        
-        modelBuilder.Entity<Poliza>()
-            .HasOne<Vehiculo>()
-            .WithOne()
-            .HasForeignKey<Poliza>(p => p.VehiculoId)
-            .OnDelete(DeleteBehavior.Cascade);
-
-        modelBuilder.Entity<Siniestro>()
-            .HasOne<Poliza>()
-            .WithMany()
-            .HasForeignKey(s => s.PolizaId)
-            .OnDelete(DeleteBehavior.Cascade);
-
-
-        //un siniestro puede tener varios terceros (distintos) y un tercero solo esta involucrado en un siniestro
-
-        modelBuilder.Entity<Tercero>()
-            .HasOne<Siniestro>()
-            .WithMany()
-            .HasForeignKey(t => t.SiniestroId)
-            .OnDelete(DeleteBehavior.Cascade);
-
-
     }
 }

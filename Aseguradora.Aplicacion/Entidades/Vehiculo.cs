@@ -8,6 +8,7 @@ public class Vehiculo
     public int AnioFabricacion {get;set;} = 1990;
     public int TitularId {get;set;}
 
+    public List<Poliza>? Polizas {get; set;}
 
     
     public Vehiculo(string? dominio, string? marca, int anioFabricacion, int titularId)

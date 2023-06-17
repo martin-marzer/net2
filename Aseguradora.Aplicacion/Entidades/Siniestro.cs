@@ -8,6 +8,7 @@ public class Siniestro {
     public DateTime FechaDeOcurrencia {get;set;} = DateTime.Now;
     public int PolizaId {get;set;}
 
+    public List<Tercero>? listaTerceros {get; set;}
 
   
     public Siniestro(int polizaId, String? direccionDelHecho, String? descripcionDelAccidente, DateTime fechaDeOcurrencia){
