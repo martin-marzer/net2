@@ -1,10 +1,6 @@
 using Aseguradora.Aplicacion.Entidades;
 using Aseguradora.Aplicacion.Interfaces;
 
-using Microsoft.EntityFrameworkCore;
-
-using System.Text.RegularExpressions;
-
 namespace Aseguradora.Repositorios;
 
 public class RepositorioTitular : IRepositorioTitular
@@ -41,9 +37,7 @@ public class RepositorioTitular : IRepositorioTitular
     {
         using (var context = new AseguradoraContext())
         {
-            var titularElim = context.Titulares.FirstOrDefault(t => t.ID == ID);
-            if (titularElim == null) throw new Exception("lo siento compadre, no existe el titular con ese ID, intenta de nuevo ");
-            
+            var titularElim = context.Titulares.First(t => t.ID == ID);
             context.RemoveRange(titularElim);
             context.SaveChanges();        
         }
@@ -59,12 +53,12 @@ public class RepositorioTitular : IRepositorioTitular
         }
     }
 
-    public  List<Titular> ListarTitularesConSusVehiculos()
+    public  List<Vehiculo> ListarVehiculosDelTitular(int ID)
     {
         using (var context = new AseguradoraContext())
         {
-            var listaTitulares = context.Titulares.Include(t => t.listaVehiculos).ToList();
-            return listaTitulares;
+            var listarConSusVehiculos = context.Titulares.First(t => t.ID == ID).Vehiculos;
+            return listarConSusVehiculos;
         }
     }
 }

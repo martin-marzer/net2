@@ -19,13 +19,7 @@ public abstract class Persona{
     public string? Telefono {get; set;}
 
     public Persona(){}
-    public Persona(int dni, string apellido, string nombre, string telefono){
-        Dni = dni;
-        Apellido = apellido;
-        Nombre = nombre;
-        Telefono = telefono;
-    }
-
+    
     public override string ToString(){
         return $"{ID}: {Dni} {Apellido} {Nombre} {Telefono}";
     }

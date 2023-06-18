@@ -3,23 +3,11 @@ namespace Aseguradora.Aplicacion.Entidades;
 public class Vehiculo
 {
     public int ID {get; private set;} 
-    public string Dominio {get;set;} = "Sin dominio";
-    public string Marca {get;set;} = "Sin marca";
-    public int AnioFabricacion {get;set;} = 1990;
+    public string? Dominio {get;set;}
+    public string? Marca {get;set;}
+    public int AnioFabricacion {get;set;}
     public int TitularId {get;set;}
-
-    public List<Poliza>? Polizas {get; set;}
-
-    
-    public Vehiculo(string? dominio, string? marca, int anioFabricacion, int titularId)
-    {
-        if (titularId < 1) throw new Exception("los titulares son identificados a partir del id 1");
-        TitularId = titularId;
-
-        if (anioFabricacion >= 1990 && anioFabricacion <= DateTime.Now.Year) AnioFabricacion = anioFabricacion;
-        if(!string.IsNullOrWhiteSpace(dominio)) Dominio = dominio;
-        if(!string.IsNullOrWhiteSpace(marca)) Marca = marca;
-    }
+    public List<Poliza> Polizas {get; set;} =  new List<Poliza>();
 
     public override string ToString()
     {

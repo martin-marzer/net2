@@ -1,24 +1,16 @@
 namespace Aseguradora.Aplicacion.Entidades;
 
 public class Siniestro { 
-    public int ID {get; private set;} //es privado porque solo se encarga de setearlo la BD, no se le puede dar un valor al objeto
-    public string DireccionDelHecho {get; set;} = "No tiene direccion";
-    public string DescripcionDelAccidente {get; set;} = "No tiene Desc";
-    public DateTime FechaDeingreso {get;set;} = DateTime.Now;
-    public DateTime FechaDeOcurrencia {get;set;} = DateTime.Now;
+    public int ID {get; private set;}
+    public string? DireccionDelHecho {get; set;}
+    public string? DescripcionDelAccidente {get; set;}
+    public DateTime FechaDeingreso {get;set;}
+    public DateTime FechaDeOcurrencia {get;set;}
     public int PolizaId {get;set;}
-
-    public List<Tercero>? listaTerceros {get; set;}
+    public List<Tercero> Terceros {get; set;}  =  new List<Tercero>();
 
   
-    public Siniestro(int polizaId, String? direccionDelHecho, String? descripcionDelAccidente, DateTime fechaDeOcurrencia){
-        if (polizaId < 1) throw new Exception("las polizas son identificadas a partir del id 1");
-        PolizaId=polizaId;
-
-        if(!string.IsNullOrWhiteSpace(direccionDelHecho)) DireccionDelHecho = direccionDelHecho;
-        if(!string.IsNullOrWhiteSpace(descripcionDelAccidente)) DescripcionDelAccidente = descripcionDelAccidente;
-        if(fechaDeOcurrencia != null)  FechaDeOcurrencia = (DateTime)fechaDeOcurrencia;
-    }
+    public Siniestro(){}
 
     public override String ToString(){
         return $"ID: {ID}, PolizaId: {PolizaId}, DireccionDelHecho: {DireccionDelHecho}, DescripciónDelAccidente: {DescripcionDelAccidente}, FechaDeingreso: {FechaDeingreso}, FechaDeOcurrencia: {FechaDeOcurrencia}";
