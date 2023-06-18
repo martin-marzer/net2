@@ -14,14 +14,38 @@
         </a>
     </button>
     
-    <table class="table">
+    <table id="table" class="table">
         <thead>
             <tr>
-                <th>ID</th>
-                <th>DNI</th>
+                <th> ID
+                    @if (tieneElementos){
+                        <button @onclick='() => OrdenarPorCampo("ID")' style="background-color: white;border: none;padding: 0;"> 
+                            <span class="oi oi-chevron-bottom"></span>
+                        </button> 
+                    }
+                </th>
+                <th>DNI
+                    @if (tieneElementos){
+                        <button @onclick='() => OrdenarPorCampo("Dni")' style="background-color: white;border: none;padding: 0;"> 
+                            <span class="oi oi-chevron-bottom"></span>
+                        </button> 
+                    }
+                </th>
                 <th>NOMBRE</th>
-                <th>APELLIDO</th>
-                <th>EMAIL</th>
+                <th>APELLIDO
+                    @if (tieneElementos){
+                        <button @onclick='() => OrdenarPorCampo("Apellido")' style="background-color: white;border: none;padding: 0;"> 
+                            <span class="oi oi-chevron-bottom"></span>
+                        </button> 
+                    }
+                </th>
+                <th>EMAIL
+                    @if (tieneElementos){
+                        <button @onclick='() => OrdenarPorCampo("Email")' style="background-color: white;border: none;padding: 0;"> 
+                            <span class="oi oi-chevron-bottom"></span>
+                        </button> 
+                    }
+                </th>
                 <th>TELEFONO</th>
                 <th>ACCIÓN</th>
             </tr>
@@ -68,7 +92,11 @@
 
     protected override void OnParametersSet()
     {
-        if(lista.Count > 0) tieneElementos = true;
+        if(lista.Count > 0) 
+        {
+            tieneElementos = true;
+
+        }
     }
 
     DialogoConfirmacion dialogo = null!;
@@ -87,6 +115,46 @@
         }
     }
      
+    private string campoOrdenado = "";
+    private bool ordenAscendente = true;
 
+    private void OrdenarPorCampo(string campo)
+    {
+        if (campo == campoOrdenado)
+            ordenAscendente = !ordenAscendente;
+        else
+            ordenAscendente = false;
+
+        campoOrdenado = campo;
+
+        switch (campo)
+        {
+            case "ID":
+                if (ordenAscendente)
+                    lista = lista.OrderBy(e => e.ID).ToList();
+                else
+                    lista = lista.OrderByDescending(e => e.ID).ToList();
+                break;
+            case "Dni":
+                if (ordenAscendente)
+                    lista = lista.OrderBy(e => e.Dni).ToList();
+                else
+                    lista = lista.OrderByDescending(e => e.Dni).ToList();
+                break;
+            case "Apellido":
+                if (ordenAscendente)
+                    lista = lista.OrderBy(e => e.Apellido).ToList();
+                else
+                    lista = lista.OrderByDescending(e => e.Apellido).ToList();
+                break;
+            case "Email":
+                if (ordenAscendente)
+                    lista = lista.OrderBy(e => e.Email).ToList();
+                else
+                    lista = lista.OrderByDescending(e => e.Email).ToList();
+                break;
+            // Otros casos para más campos de ordenación
+        }
+    }
 
 }

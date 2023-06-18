@@ -9,7 +9,7 @@ public class Titular : Persona{
     [Required(ErrorMessage = "el email es obligatorio")]
     [RegularExpression("^[a-zA-Z0-9_\\.-]+@([a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$", ErrorMessage = "Debes indicar un email válido")]
     public string? Email {get; set;}
-    public List<Vehiculo>? listaVehiculos {get; set;} //Se guardan los vehiculos pertenecientes al titular
+    public List<Vehiculo> listaVehiculos {get; set;} = new List<Vehiculo>(); //Se guardan los vehiculos pertenecientes al titular
 
     public Titular(){}
 
