@@ -24,16 +24,5 @@ public class AseguradoraContext : DbContext
         
     }
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
-        //con esto le obligo a que no se repitan los dni, en caso de q ocurra me tira una expecion
-        modelBuilder.Entity<Titular>()
-            .HasIndex(t => t.Dni)
-            .IsUnique();
-
-        //dominios unicos (patentes), si se repite hay excepcion
-        modelBuilder.Entity<Vehiculo>()
-            .HasIndex(v => v.Dominio)
-            .IsUnique();
-    }
+    // protected override void OnModelCreating(ModelBuilder modelBuilder){}
 }

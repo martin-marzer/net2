@@ -1,6 +1,8 @@
 ﻿@inherits LayoutComponentBase
 
-<PageTitle>Aseguradora.UI</PageTitle>
+@inject NavigationManager NavigationManager
+
+<PageTitle>Aseguradora</PageTitle>
 
 <div class="page">
     <div class="sidebar">
@@ -9,11 +11,22 @@
 
     <main>
         <div class="top-row px-4">
-            <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
+            <span></span> URL Actual: @currentUrl
         </div>
 
         <article class="content px-4">
             @Body
         </article>
     </main>
+
 </div>
+
+@code {
+    private string? currentUrl;
+
+    protected override void OnParametersSet()
+    {
+        currentUrl = NavigationManager.Uri;
+        currentUrl = currentUrl.Split("/")[3];
+    }
+}

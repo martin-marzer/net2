@@ -1,19 +1,29 @@
 namespace Aseguradora.Aplicacion.Entidades;
 
+using System.ComponentModel.DataAnnotations;
+
 public abstract class Persona{
     public int ID{get; private set;}
+
+    [Required(ErrorMessage = "el dni es obligatorio")]
+    [RegularExpression(@"^(?!0)\d{1,8}$", ErrorMessage = "El número debe como maximo 8 digitos y ser positivo. (Dni Argentino)")]
     public int Dni{get; set;} 
-    public string Apellido{get; set;} = "Sin apellido";
-    public string Nombre{get; set;} = "Sin nombre";
-    public string Telefono {get; set;} = "Sin telefono";
 
-    public Persona(int dni, string? apellido, string? nombre, string? telefono){
-        if (dni < 0) throw new Exception("no puede ser un numero negativo");
+    [Required(ErrorMessage = "el apellido es obligatorio")]
+    public string? Apellido{get; set;}
+
+    [Required(ErrorMessage = "el nombre es obligatorio")]
+    public string? Nombre{get; set;}
+
+    [Required(ErrorMessage = "el telefono es obligatorio")]
+    public string? Telefono {get; set;}
+
+    public Persona(){}
+    public Persona(int dni, string apellido, string nombre, string telefono){
         Dni = dni;
-
-        if(!string.IsNullOrWhiteSpace(apellido))  Apellido = apellido;
-        if(!string.IsNullOrWhiteSpace(nombre)) Nombre = nombre;
-        if(!string.IsNullOrWhiteSpace(telefono)) Telefono = telefono;
+        Apellido = apellido;
+        Nombre = nombre;
+        Telefono = telefono;
     }
 
     public override string ToString(){

@@ -3,24 +3,25 @@ using Aseguradora.Aplicacion.Interfaces;
 
 using Microsoft.EntityFrameworkCore;
 
+using System.Text.RegularExpressions;
+
 namespace Aseguradora.Repositorios;
 
 public class RepositorioTitular : IRepositorioTitular
 {    
-    public void AgregarTitular(Titular? titular)
+    public void AgregarTitular(Titular titular)
     {
-        if (titular == null) throw new Exception("error: no se puede cargar titular");
         using (var context = new AseguradoraContext())
         {
+            if (context.Titulares.Any(t => t.Dni == titular.Dni)) throw new Exception("error: probablemente ya existe ese titular");
             context.Add(titular);
             context.SaveChanges();
         }
     }
 
     //previamente liste los Titulars busque uno y lo modifico aca
-    public void ModificarTitular(Titular? titularModificado)
+    public void ModificarTitular(Titular titularModificado)
     {    
-        if (titularModificado == null) throw new Exception("error: tenes que cargar el titular previamente");
         using (var context = new AseguradoraContext())
         {
             var titularEncontrado = context.Titulares.FirstOrDefault(t => t.ID == titularModificado.ID);
@@ -32,11 +33,6 @@ public class RepositorioTitular : IRepositorioTitular
             titularEncontrado.Direccion = titularModificado.Direccion;
             titularEncontrado.Telefono = titularModificado.Telefono;
             titularEncontrado.Email = titularModificado.Email;
-            // titularEncontrado.Dni = 100;
-            // titularEncontrado.Apellido = "vazqe";
-            // titularEncontrado.Nombre = "martin";
-            // titularEncontrado.Telefono = "22412asd";
-            // titularEncontrado.Email = "email@.com";
             context.SaveChanges();
         }
     }

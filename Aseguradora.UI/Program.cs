@@ -1,7 +1,17 @@
-/*
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Aseguradora.UI.Data;
+
+//agrego mis usings
+using Aseguradora.Repositorios;
+using Aseguradora.Aplicacion.UseCases;
+using Aseguradora.Aplicacion.Interfaces;
+
+
+using (var db = new AseguradoraContext())
+{
+    db.Database.EnsureCreated();
+}
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +19,39 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<WeatherForecastService>();
+
+//agrego mis servicios
+builder.Services.AddTransient<AgregarTitularUseCase>();
+builder.Services.AddTransient<ListarTitularesUseCase>();
+builder.Services.AddTransient<EliminarTitularUseCase>();
+builder.Services.AddTransient<ModificarTitularUseCase>();
+builder.Services.AddScoped<IRepositorioTitular, RepositorioTitular>();
+
+builder.Services.AddTransient<AgregarVehiculoUseCase>();
+builder.Services.AddTransient<ListarVehiculosUseCase>();
+builder.Services.AddTransient<EliminarVehiculoUseCase>();
+builder.Services.AddTransient<ModificarVehiculoUseCase>();
+builder.Services.AddScoped<IRepositorioVehiculo, RepositorioVehiculo>();
+
+builder.Services.AddTransient<AgregarPolizaUseCase>();
+builder.Services.AddTransient<ListarPolizasUseCase>();
+builder.Services.AddTransient<EliminarPolizaUseCase>();
+builder.Services.AddTransient<ModificarPolizaUseCase>();
+builder.Services.AddScoped<IRepositorioPoliza, RepositorioPoliza>();
+
+builder.Services.AddTransient<AgregarSiniestroUseCase>();
+builder.Services.AddTransient<ListarSiniestrosUseCase>();
+builder.Services.AddTransient<EliminarSiniestroUseCase>();
+builder.Services.AddTransient<ModificarSiniestroUseCase>();
+builder.Services.AddScoped<IRepositorioSiniestro, RepositorioSiniestro>();
+
+builder.Services.AddTransient<AgregarTerceroUseCase>();
+builder.Services.AddTransient<ListarTercerosUseCase>();
+builder.Services.AddTransient<EliminarTerceroUseCase>();
+builder.Services.AddTransient<ModificarTerceroUseCase>();
+builder.Services.AddScoped<IRepositorioTercero, RepositorioTercero>();
+
+
 
 var app = builder.Build();
 
@@ -28,18 +71,10 @@ app.MapFallbackToPage("/_Host");
 
 app.Run();
 
-*/
 
-using Aseguradora.Repositorios;
-using Aseguradora.Aplicacion.UseCases;
-using Aseguradora.Aplicacion.Entidades;
 
-// Poliza a = new Poliza(2,33,"hola","as",null,null);
-using (var db = new AseguradoraContext())
-{
-    db.Database.EnsureCreated();
-}
 
+/*
 var repoTitular = new RepositorioTitular();
 var repoVehiculo = new RepositorioVehiculo();
 
@@ -82,3 +117,4 @@ if (titular != null) eliminarTitularUseCase.Ejecutar(titular.ID);
 // vehiculo = lista.Find(v => v.ID == 2);
 // if (vehiculo != null) modificarVehiculoUseCase.Ejecutar(vehiculo);
 
+*/

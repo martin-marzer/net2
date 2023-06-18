@@ -1,0 +1,104 @@
+@page "/agregartitular"
+@inject NavigationManager Navegador;
+@inject AgregarTitularUseCase AgregarTitularUseCase
+
+ <div>
+    <h3>Titular Nuevo</h3>
+    <EditForm Model="titular"OnValidSubmit="Aceptar" class="col-md-10">
+        <DataAnnotationsValidator/>
+
+        <div class="row">
+            <div class="form-group col-md-6">
+                <label for="apellido" class="col-md-2 col-form-label">Apellido:</label>
+                <div class="col-md-10">
+                    <InputText id="apellido" class="form-control" @bind-Value="titular.Apellido" />
+                    <ValidationMessage For="@(() => titular.Apellido)" />
+                </div>
+            </div>
+
+            <div class="form-group col-md-6">
+                <label for="nombre" class="col-md-2 col-form-label">Nombre:</label>
+                <div class="col-md-10">
+                    <InputText id="nombre" class="form-control" @bind-Value="titular.Nombre" />
+                    <ValidationMessage For="@(() => titular.Nombre)" />
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group col-md-6">
+                <label for="dni" class="col-md-2 col-form-label">Dni:</label>
+                <div class="col-md-10">
+                    <InputNumber id="dni" class="form-control"   @bind-Value="titular.Dni" />
+                    <ValidationMessage For="@(() => titular.Dni)" />
+                </div>
+            </div>
+
+            <div class="form-group col-md-6">
+                <label for="email" class="col-md-2 col-form-label">Email:</label>
+                <div class="col-md-10">
+                    <InputText id="email" class="form-control" @bind-Value="titular.Email" />
+                    <ValidationMessage For="@(() => titular.Email)" />
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group col-md-6">
+                <label for="telefono" class="col-md-2 col-form-label">telefono:</label>
+                <div class="col-md-10">
+                    <InputText id="telefono" class="form-control" @bind-Value="titular.Telefono" />
+                    <ValidationMessage For="@(() => titular.Telefono)" />
+                </div>
+            </div>
+
+            <div class="form-group col-md-6">
+                <label for="direccion" class="col-md-2 col-form-label">Direccion:</label>
+                <div class="col-md-10">
+                    <InputText id="direccion" class="form-control" @bind-Value="titular.Direccion" />
+                    <ValidationMessage For="@(() => titular.Direccion)" />
+                </div>
+            </div>
+        </div>
+
+
+
+        @* <div class="form-group row"> <label for="message" class="col-md-2 col-form-label">mensaje:</label>
+            <div class="col-md-10"> 
+                <InputTextArea rows="5" id="message" class="form-control" @bind-Value="_contact.Message" />
+            </div>
+        </div>  *@
+        
+        <button style="margin-top: 1rem;" class="btn btn-primary" type="submit">Agregar </button>
+    </EditForm>
+
+    @if (esValido){
+        <p style="color:green" >@mensaje
+            <a href="listadotitulares"> Vea aqui</a> 
+        </p>
+    }
+    @if (esInvalido){
+         <p style="color:red" >@mensaje</p>
+    }
+    
+</div> 
+
+@code {
+    Titular titular = new Titular();
+    bool esInvalido = false, esValido = false;
+    string mensaje = "";
+    void Aceptar()
+    {
+        try {
+            AgregarTitularUseCase.Ejecutar(titular);
+            titular = new Titular();
+            @* Navegador.NavigateTo("listadotitulares"); *@
+            mensaje="Agregado correctamente.";
+            esInvalido = false; esValido = true;
+        }
+        catch(Exception e){
+            mensaje = e.Message;
+            esInvalido = true; esValido= false;
+        }
+    }
+}
