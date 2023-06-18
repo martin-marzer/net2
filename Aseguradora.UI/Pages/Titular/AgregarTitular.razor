@@ -2,9 +2,15 @@
 @inject NavigationManager Navegador;
 @inject AgregarTitularUseCase AgregarTitularUseCase
 
+<PageTitle>Agregar Titular</PageTitle>
+
  <div>
+    <DialogoMostrar @ref="dialogo"/>
+    <a href="/listadotitulares" style="text-decoration: none;color: black;">
+            <span class="oi oi-arrow-thick-left"></span>
+    </a>
     <h3>Titular Nuevo</h3>
-    <EditForm Model="titular"OnValidSubmit="Aceptar" class="col-md-10">
+    <EditForm Model="titular" OnValidSubmit="Aceptar" class="col-md-10">
         <DataAnnotationsValidator/>
 
         <div class="row">
@@ -72,11 +78,6 @@
         <button style="margin-top: 1rem;" class="btn btn-primary" type="submit">Agregar </button>
     </EditForm>
 
-    @if (esValido){
-        <p style="color:green" >@mensaje
-            <a href="listadotitulares"> Vea aqui</a> 
-        </p>
-    }
     @if (esInvalido){
          <p style="color:red" >@mensaje</p>
     }
@@ -87,6 +88,8 @@
     Titular titular = new Titular();
     bool esInvalido = false, esValido = false;
     string mensaje = "";
+
+     DialogoMostrar dialogo = null!;
     void Aceptar()
     {
         try {
@@ -94,11 +97,13 @@
             titular = new Titular();
             @* Navegador.NavigateTo("listadotitulares"); *@
             mensaje="Agregado correctamente.";
-            esInvalido = false; esValido = true;
+            esInvalido = false;
+            dialogo.Mostrar();
         }
         catch(Exception e){
             mensaje = e.Message;
-            esInvalido = true; esValido= false;
+            esInvalido = true;
         }
     }
+
 }

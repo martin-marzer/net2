@@ -1,8 +1,19 @@
 @page "/listadotitulares"
 @inject ListarTitularesUseCase ListarTitularesUseCase
+@inject EliminarTitularUseCase EliminarTitularUseCase
 
-<div style="overflow-x: scroll; scroll-behavior: smooth;">
-    <a href="/agregartitular">agrega aca</a>
+
+
+<PageTitle>Listado Titulares</PageTitle>
+
+<div style="overflow-x:@(!tieneElementos ? "hidden" : "scroll");">
+    <DialogoConfirmacion @ref="dialogo" OnConfirmado="Eliminar"/>
+    <button type="button" style="background-color:#549539;border-radius: 0.5rem;padding: 0.5rem 0.2rem;width: 10rem;">
+        <a href="/agregartitular" style="text-decoration: none;color: white;display: flex;justify-content: space-around;align-items: baseline;">
+            <p style="margin: 0;">Agregar Titular</p> <span class="oi oi-plus" style="color: white;"></span>
+        </a>
+    </button>
+    
     <table class="table">
         <thead>
             <tr>
@@ -16,24 +27,28 @@
             </tr>
         </thead>
         <tbody>
-        @foreach (var titular in lista)
-        {
-            <tr>
-                <td>@titular.ID</td>
-                <td>@titular.Dni</td>
-                <td>@titular.Nombre</td>
-                <td>@titular.Apellido</td>
-                <td>@titular.Email</td>
-                <td>@titular.Telefono</td>
-                <td>
-                    <button class="btn btn-primary">
-                        <span class="oi oi-pencil"></span>
-                    </button>
-                    <button class="btn btn-danger">
-                        <span class="oi oi-trash"></span>
-                    </button>
-                </td>
-            </tr>
+        @if (!tieneElementos) {
+            <p>No hay elementos</p>
+        } else {
+            @foreach (var titular in lista)
+            {
+                <tr>
+                    <td>@titular.ID</td>
+                    <td>@titular.Dni</td>
+                    <td>@titular.Nombre</td>
+                    <td>@titular.Apellido</td>
+                    <td>@titular.Email</td>
+                    <td>@titular.Telefono</td>
+                    <td>
+                        <button class="btn btn-primary"> 
+                            <span class="oi oi-pencil"></span>
+                        </button>
+                        <button class="btn btn-danger"  @onclick="()=>ConfirmarEliminacion(titular)">
+                            <span class="oi oi-trash"></span>
+                        </button>
+                    </td>
+                </tr>
+            }
         }
         </tbody>
     </table>
@@ -45,8 +60,33 @@
 
 @code {
     List<Titular> lista = new List<Titular>();
+    bool tieneElementos = false;
     protected override void OnInitialized()
     {
         lista = ListarTitularesUseCase.Ejecutar();
     }
+
+    protected override void OnParametersSet()
+    {
+        if(lista.Count > 0) tieneElementos = true;
+    }
+
+    DialogoConfirmacion dialogo = null!;
+    Titular? titularParaEliminar = null;
+    private void ConfirmarEliminacion(Titular titular)
+    {
+        titularParaEliminar = titular;
+        dialogo.Mensaje = $"¿Desea eliminar al titular {titular.Nombre} {titular.Apellido}?";
+        dialogo.Mostrar();
+    }
+    private void Eliminar()
+        {
+        if (titularParaEliminar != null) {
+            EliminarTitularUseCase.Ejecutar(titularParaEliminar.ID);
+            lista = ListarTitularesUseCase.Ejecutar(); //se actualiza la lista de clientes
+        }
+    }
+     
+
+
 }
