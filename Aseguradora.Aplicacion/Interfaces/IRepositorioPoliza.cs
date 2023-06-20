@@ -7,4 +7,6 @@ public interface IRepositorioPoliza
     void ModificarPoliza(Poliza poliza);
     void EliminarPoliza(int ID);
     List<Poliza> ListarPolizas();
+
+    List<Siniestro> ListarSiniestrosDePoliza(int ID);
 }

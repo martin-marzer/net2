@@ -2,10 +2,10 @@
 {
     <div class="dialogo-contenedor">
        <div class="dialogo-contenido">
-           <h3>@Mensaje</h3>
-           <button class="btn btn-primary" @onclick="() => Cerrar(true)">Aceptar</button>
-           <button class="btn btn-secondary" @onclick="() => Cerrar(false)">Cancelar</button>
-       </div>
+           <button style="margin-left: 90%;" class="btn btn-danger" @onclick="() => Cerrar(false)"><span class="oi oi-x"></span></button>
+            <h3>@Mensaje</h3>
+            <button class="btn btn-primary" @onclick="() => Cerrar(true)">Aceptar</button>
+        </div>
    </div>
 }
 
@@ -14,20 +14,23 @@
     [Parameter]
     public string Mensaje {get;set;}="";
 
-    public void Mostrar()
-    {
-        visible=true;
-        StateHasChanged();
-    }
-    void Cerrar ( bool confirmar )
-    {
-        visible = false ;
-        if (confirmar ){
-            OnConfirmado .InvokeAsync ();
-        }
-    }
-
     [Parameter]
     public EventCallback OnConfirmado{get;set;}
 
+    public async Task Mostrar(bool cerrarSolo)
+    {
+        visible=true;
+        StateHasChanged();
+        if (cerrarSolo){
+            await Task.Delay(5000);
+            visible = false;
+        }
+    }
+    void Cerrar(bool confirmar)
+    {
+        visible = false ;
+        if (confirmar){
+            OnConfirmado.InvokeAsync();
+        }
+    }
 }

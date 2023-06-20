@@ -6,9 +6,8 @@ namespace Aseguradora.Repositorios;
 
 public class RepositorioPoliza : IRepositorioPoliza
 {    
-    public void AgregarPoliza(Poliza? poliza)
+    public void AgregarPoliza(Poliza poliza)
     {
-        if (poliza == null) throw new Exception("error: no se puede cargar poliza");
         using (var context = new AseguradoraContext())
         {
             if (!context.Vehiculos.Any(v => v.ID == poliza.VehiculoId)) throw new Exception("error: el id del vehiculo q ingresaste no existe");
@@ -18,9 +17,8 @@ public class RepositorioPoliza : IRepositorioPoliza
     }
 
     //previamente liste los Polizas busque uno y lo modifico aca
-    public void ModificarPoliza(Poliza? polizaModificado)
+    public void ModificarPoliza(Poliza polizaModificado)
     {    
-        if (polizaModificado == null) throw new Exception("error: tenes que cargar la poliza previamente");
         using (var context = new AseguradoraContext())
         {
             var polizaEncontrada = context.Polizas.FirstOrDefault(p => p.ID == polizaModificado.ID);
@@ -49,8 +47,7 @@ public class RepositorioPoliza : IRepositorioPoliza
         {
             var polizaElim = context.Polizas.FirstOrDefault(p => p.ID == ID);
             if (polizaElim == null) throw new Exception("lo siento compadre, no existe el poliza con ese ID, intenta de nuevo ");
-            
-            context.RemoveRange(polizaElim);
+            context.Remove(polizaElim);
             context.SaveChanges();
         }
     }
@@ -62,6 +59,15 @@ public class RepositorioPoliza : IRepositorioPoliza
         {
             var listaPolizas = context.Polizas.ToList();
             return listaPolizas;
+        }
+    }
+
+    public List<Siniestro> ListarSiniestrosDePoliza(int ID)
+    {
+        using (var context = new AseguradoraContext())
+        {
+            var listarConSusSiniestros = context.Polizas.First(p => p.ID == ID).Siniestros;
+            return listarConSusSiniestros;
         }
     }
 

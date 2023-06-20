@@ -7,15 +7,14 @@ namespace Aseguradora.Repositorios;
 
 public class RepositorioSiniestro : IRepositorioSiniestro
 {       
-    public void AgregarSiniestro(Siniestro? siniestro)
+    public void AgregarSiniestro(Siniestro siniestro)
     {
-        if (siniestro == null) throw new Exception("error: no se puede cargar siniestro");
         using (var context = new AseguradoraContext())
         {
             var poliza = context.Polizas.FirstOrDefault(p => p.ID == siniestro.PolizaId);
             if (poliza == null) throw new Exception("lo siento compadre, no existe ese id de poliza, intenta de nuevo ");
 
-            if (poliza.FechaDeFinDeVigencia <= siniestro.FechaDeOcurrencia) throw new Exception($"no podes registrar el siniestro de la fecha {siniestro.FechaDeOcurrencia}  porque tu seguro ya vencio {poliza.FechaDeFinDeVigencia}");
+            if (poliza.FechaDeFinDeVigencia < siniestro.FechaDeOcurrencia) throw new Exception($"no podes registrar el siniestro de la fecha {siniestro.FechaDeOcurrencia}  porque tu seguro ya vencio {poliza.FechaDeFinDeVigencia}");
             
             context.Add(siniestro);
             context.SaveChanges();
@@ -23,9 +22,8 @@ public class RepositorioSiniestro : IRepositorioSiniestro
     }
 
     //previamente liste los Siniestros busque uno y lo modifico aca
-    public void ModificarSiniestro(Siniestro? siniestroModificado)
+    public void ModificarSiniestro(Siniestro siniestroModificado)
     {    
-        if (siniestroModificado == null) throw new Exception("error: tenes que cargar el siniestro previamente");
         using (var context = new AseguradoraContext())
         {
             var siniestroEncontrado = context.Siniestros.FirstOrDefault(s => s.ID == siniestroModificado.ID);
@@ -53,7 +51,7 @@ public class RepositorioSiniestro : IRepositorioSiniestro
             var siniestro = context.Siniestros.FirstOrDefault(s => s.ID == ID);
             if (siniestro == null) throw new Exception("lo siento compadre, no existe el siniestro con ese ID, intenta de nuevo ");
             
-            context.RemoveRange(siniestro);
+            context.Remove(siniestro);
             context.SaveChanges();
         }
     }
@@ -66,5 +64,14 @@ public class RepositorioSiniestro : IRepositorioSiniestro
             return listaSiniestros;
         }
         
+    }
+
+    public List<Tercero> ListarTercerosDeSiniestro(int ID)
+    {
+        using (var context = new AseguradoraContext())
+        {
+            var listarConSusTerceros = context.Siniestros.First(t => t.ID == ID).Terceros;
+            return listarConSusTerceros;
+        }
     }
 }           

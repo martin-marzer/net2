@@ -7,4 +7,5 @@ public interface IRepositorioVehiculo
     void ModificarVehiculo(Vehiculo vehiculo);
     void EliminarVehiculo(int id);
     List<Vehiculo> ListarVehiculos();
+    List<Poliza> ListarPolizasDeVehiculo(int ID);
 }

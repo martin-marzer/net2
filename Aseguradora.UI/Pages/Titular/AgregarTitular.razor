@@ -1,11 +1,11 @@
-@page "/agregartitular"
+@page "/titular"
 @inject NavigationManager Navegador;
 @inject AgregarTitularUseCase AgregarTitularUseCase
 
 <PageTitle>Agregar Titular</PageTitle>
 
  <div>
-    <DialogoMostrar @ref="dialogo"/>
+    <DialogoConfirmacion @ref="dialogo" OnConfirmado="Volver"/>
     <a href="/listadotitulares" style="text-decoration: none;color: black;">
             <span class="oi oi-arrow-thick-left"></span>
     </a>
@@ -17,7 +17,7 @@
             <div class="form-group col-md-6">
                 <label for="apellido" class="col-md-2 col-form-label">Apellido:</label>
                 <div class="col-md-10">
-                    <InputText id="apellido" class="form-control" @bind-Value="titular.Apellido" />
+                    <InputText id="apellido" placeholder="Ramirez" class="form-control" @bind-Value="titular.Apellido" />
                     <ValidationMessage For="@(() => titular.Apellido)" />
                 </div>
             </div>
@@ -25,7 +25,7 @@
             <div class="form-group col-md-6">
                 <label for="nombre" class="col-md-2 col-form-label">Nombre:</label>
                 <div class="col-md-10">
-                    <InputText id="nombre" class="form-control" @bind-Value="titular.Nombre" />
+                    <InputText id="nombre" placeholder="Martín" class="form-control" @bind-Value="titular.Nombre" />
                     <ValidationMessage For="@(() => titular.Nombre)" />
                 </div>
             </div>
@@ -35,7 +35,7 @@
             <div class="form-group col-md-6">
                 <label for="dni" class="col-md-2 col-form-label">Dni:</label>
                 <div class="col-md-10">
-                    <InputNumber id="dni" class="form-control"   @bind-Value="titular.Dni" />
+                    <InputText id="dni" placeholder="49666777"  class="form-control"   @bind-Value="titular.Dni" />
                     <ValidationMessage For="@(() => titular.Dni)" />
                 </div>
             </div>
@@ -43,7 +43,7 @@
             <div class="form-group col-md-6">
                 <label for="email" class="col-md-2 col-form-label">Email:</label>
                 <div class="col-md-10">
-                    <InputText id="email" class="form-control" @bind-Value="titular.Email" />
+                    <InputText id="email" placeholder="email123@gmail.com" class="form-control" @bind-Value="titular.Email" />
                     <ValidationMessage For="@(() => titular.Email)" />
                 </div>
             </div>
@@ -53,7 +53,7 @@
             <div class="form-group col-md-6">
                 <label for="telefono" class="col-md-2 col-form-label">telefono:</label>
                 <div class="col-md-10">
-                    <InputText id="telefono" class="form-control" @bind-Value="titular.Telefono" />
+                    <InputText id="telefono" placeholder="2298630992" class="form-control" @bind-Value="titular.Telefono" />
                     <ValidationMessage For="@(() => titular.Telefono)" />
                 </div>
             </div>
@@ -61,7 +61,7 @@
             <div class="form-group col-md-6">
                 <label for="direccion" class="col-md-2 col-form-label">Direccion:</label>
                 <div class="col-md-10">
-                    <InputText id="direccion" class="form-control" @bind-Value="titular.Direccion" />
+                    <InputText id="direccion" placeholder="casa 123" class="form-control" @bind-Value="titular.Direccion" />
                     <ValidationMessage For="@(() => titular.Direccion)" />
                 </div>
             </div>
@@ -75,7 +75,7 @@
             </div>
         </div>  *@
         
-        <button style="margin-top: 1rem;" class="btn btn-primary" type="submit">Agregar </button>
+        <button style="margin-top: 1rem;" class="btn btn-primary" type="submit" >Agregar </button>
     </EditForm>
 
     @if (esInvalido){
@@ -86,24 +86,32 @@
 
 @code {
     Titular titular = new Titular();
-    bool esInvalido = false, esValido = false;
+    bool esInvalido = false;
     string mensaje = "";
-
-     DialogoMostrar dialogo = null!;
-    void Aceptar()
+    DialogoConfirmacion dialogo = null!;
+    private async Task Aceptar()
     {
         try {
             AgregarTitularUseCase.Ejecutar(titular);
             titular = new Titular();
-            @* Navegador.NavigateTo("listadotitulares"); *@
-            mensaje="Agregado correctamente.";
             esInvalido = false;
-            dialogo.Mostrar();
+            await ConfirmarVolver(); //solo si se pudo agregar en la BD salta el mensaje
         }
         catch(Exception e){
             mensaje = e.Message;
             esInvalido = true;
         }
+    }
+
+
+    private async Task ConfirmarVolver()
+    {
+        dialogo.Mensaje = $"se ha agregado correctamente el titular";
+        await dialogo.Mostrar(true);
+    }
+    private void Volver()
+    {
+        Navegador.NavigateTo("listadotitulares");
     }
 
 }

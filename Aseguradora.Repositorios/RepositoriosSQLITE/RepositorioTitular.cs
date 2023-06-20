@@ -20,7 +20,7 @@ public class RepositorioTitular : IRepositorioTitular
     {    
         using (var context = new AseguradoraContext())
         {
-            var titularEncontrado = context.Titulares.FirstOrDefault(t => t.ID == titularModificado.ID);
+            var titularEncontrado = context.Titulares.SingleOrDefault(t => t.ID == titularModificado.ID);
             if (titularEncontrado == null) throw new Exception("lo siento compadre, no existe ese titular, intenta de nuevo ");
 
             titularEncontrado.Dni = titularModificado.Dni;
@@ -37,9 +37,10 @@ public class RepositorioTitular : IRepositorioTitular
     {
         using (var context = new AseguradoraContext())
         {
-            var titularElim = context.Titulares.First(t => t.ID == ID);
-            context.RemoveRange(titularElim);
-            context.SaveChanges();        
+            var titularElim = context.Titulares.SingleOrDefault(t => t.ID == ID);
+            if (titularElim == null) throw new Exception("lo siento compadre, no existe ese titular, intenta de nuevo ");
+            context.Remove(titularElim);
+            context.SaveChanges();  
         }
     }
 

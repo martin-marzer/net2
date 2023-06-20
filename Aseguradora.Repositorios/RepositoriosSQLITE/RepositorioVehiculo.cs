@@ -6,9 +6,8 @@ namespace Aseguradora.Repositorios;
 
 public class RepositorioVehiculo : IRepositorioVehiculo
 {    
-    public void AgregarVehiculo(Vehiculo? vehiculo)
+    public void AgregarVehiculo(Vehiculo vehiculo)
     {
-        if (vehiculo == null) throw new Exception("error: no se puede cargar vehiculo");
         using (var context = new AseguradoraContext())
         {
             if (!context.Titulares.Any(t => t.ID == vehiculo.TitularId)) throw new Exception("error: el id del titular q ingresaste no existe");
@@ -18,9 +17,8 @@ public class RepositorioVehiculo : IRepositorioVehiculo
     }
 
     //previamente liste los Vehiculos busque uno y lo modifico aca
-    public void ModificarVehiculo(Vehiculo? vehiculoModificado)
+    public void ModificarVehiculo(Vehiculo vehiculoModificado)
     {    
-        if (vehiculoModificado == null) throw new Exception("error: tenes que cargar el vehiculo previamente");
         using (var context = new AseguradoraContext())
         {
             var vehiculoEncontrado = context.Vehiculos.FirstOrDefault(v => v.ID == vehiculoModificado.ID);
@@ -30,11 +28,8 @@ public class RepositorioVehiculo : IRepositorioVehiculo
 
             vehiculoEncontrado.Dominio = vehiculoModificado.Dominio;
             vehiculoEncontrado.Marca = vehiculoModificado.Marca;
+            vehiculoEncontrado.AnioFabricacion = vehiculoModificado.AnioFabricacion;
             vehiculoEncontrado.TitularId = vehiculoModificado.TitularId;
-
-            // vehiculoEncontrado.Dominio = "patente1";
-            // vehiculoEncontrado.Marca = "mustang";
-            // vehiculoEncontrado.TitularId = 1;
             context.SaveChanges();
         }
     }
@@ -49,8 +44,7 @@ public class RepositorioVehiculo : IRepositorioVehiculo
         {
             var vehiculoElim = context.Vehiculos.FirstOrDefault(v => v.ID == ID);
             if (vehiculoElim == null) throw new Exception("lo siento compadre, no existe el vehiculo con ese ID, intenta de nuevo ");
-            
-            context.RemoveRange(vehiculoElim);
+            context.Remove(vehiculoElim);
             context.SaveChanges();
         }
     }
@@ -62,6 +56,15 @@ public class RepositorioVehiculo : IRepositorioVehiculo
         {
             var listaVehiculos = context.Vehiculos.ToList();
             return listaVehiculos;
+        }
+    }
+
+    public List<Poliza> ListarPolizasDeVehiculo(int ID)
+    {
+        using (var context = new AseguradoraContext())
+        {
+            var listarConSusPolizas = context.Vehiculos.First(v => v.ID == ID).Polizas;
+            return listarConSusPolizas;
         }
     }
 

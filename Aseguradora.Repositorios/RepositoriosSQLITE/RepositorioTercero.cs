@@ -6,9 +6,8 @@ namespace Aseguradora.Repositorios;
 
 public class RepositorioTercero : IRepositorioTercero
 {    
-    public void AgregarTercero(Tercero? tercero)
+    public void AgregarTercero(Tercero tercero)
     {
-        if (tercero == null) throw new Exception("error: no se puede cargar tercero");
         using (var context = new AseguradoraContext())
         {
             if (!context.Siniestros.Any(s => s.ID == tercero.SiniestroId)) throw new Exception("error: el id del Siniestro q ingresaste no existe");
@@ -18,9 +17,8 @@ public class RepositorioTercero : IRepositorioTercero
     }
 
     //previamente liste los Terceros busque uno y lo modifico aca
-    public void ModificarTercero(Tercero? terceroModificado)
+    public void ModificarTercero(Tercero terceroModificado)
     {    
-        if (terceroModificado == null) throw new Exception("error: tenes que cargar el tercero previamente");
         using (var context = new AseguradoraContext())
         {
             var terceroEncontrado = context.Terceros.FirstOrDefault(t => t.ID == terceroModificado.ID);
@@ -31,6 +29,7 @@ public class RepositorioTercero : IRepositorioTercero
             terceroEncontrado.Dni = terceroModificado.Dni;
             terceroEncontrado.Apellido = terceroModificado.Apellido;
             terceroEncontrado.Nombre = terceroModificado.Nombre;
+            terceroEncontrado.Telefono = terceroModificado.Telefono;
             terceroEncontrado.NombreAseguradora = terceroModificado.NombreAseguradora;
             terceroEncontrado.SiniestroId = terceroModificado.SiniestroId;
   
@@ -49,7 +48,7 @@ public class RepositorioTercero : IRepositorioTercero
             var terceroElim = context.Terceros.FirstOrDefault(t => t.ID == ID);
             if (terceroElim == null) throw new Exception("lo siento compadre, no existe el tercero con ese ID, intenta de nuevo ");
             
-            context.RemoveRange(terceroElim);
+            context.Remove(terceroElim);
             context.SaveChanges();
         }
     }
