@@ -1,15 +1,27 @@
-@page "/titular"
+@page "/titular/{Id:int?}"
+@inject ObtenerTitularUseCase ObtenerTitularUseCase
+@inject ModificarTitularUseCase ModificarTitularUseCase
 @inject NavigationManager Navegador;
 @inject AgregarTitularUseCase AgregarTitularUseCase
 
-<PageTitle>Agregar Titular</PageTitle>
+<PageTitle>Titular</PageTitle>
 
  <div>
-    <DialogoConfirmacion @ref="dialogo" OnConfirmado="Volver"/>
-    <a href="/listadotitulares" style="text-decoration: none;color: black;">
+    <a href="/titulares" style="text-decoration: none;color: black;">
             <span class="oi oi-arrow-thick-left"></span>
     </a>
-    <h3>Titular Nuevo</h3>
+
+    @if (esNuevoTitular)
+    {
+        <h3>Agregando un nuevo Titular</h3>
+        <DialogoConfirmacion @ref="dialogo" OnConfirmado="Volver"/>
+    }
+    else
+    {
+        <h3>Modificando al Titular "@titular.Nombre"</h3>
+        <DialogoConfirmacion @ref="dialogo" />
+    }
+
     <EditForm Model="titular" OnValidSubmit="Aceptar" class="col-md-10">
         <DataAnnotationsValidator/>
 
@@ -75,7 +87,7 @@
             </div>
         </div>  *@
         
-        <button style="margin-top: 1rem;" class="btn btn-primary" type="submit" >Agregar </button>
+        <button style="margin-top: 1rem;" class="btn btn-primary" type="submit" >Aceptar </button>
     </EditForm>
 
     @if (esInvalido){
@@ -86,32 +98,61 @@
 
 @code {
     Titular titular = new Titular();
+
+    [Parameter] 
+    public int? Id { get; set; }
+    bool esNuevoTitular=true;
+    protected override void OnParametersSet()
+    {
+        if (Id != null) {
+            var titular_hallado = ObtenerTitularUseCase.Ejecutar(Id.Value);
+            if (titular_hallado != null)
+            {
+                titular = titular_hallado;
+                esNuevoTitular=false;
+            }
+        }
+    }
+
+
     bool esInvalido = false;
     string mensaje = "";
     DialogoConfirmacion dialogo = null!;
     private async Task Aceptar()
     {
-        try {
-            AgregarTitularUseCase.Ejecutar(titular);
-            titular = new Titular();
-            esInvalido = false;
-            await ConfirmarVolver(); //solo si se pudo agregar en la BD salta el mensaje
+        if(esNuevoTitular) {
+            try {
+                AgregarTitularUseCase.Ejecutar(titular);
+                titular = new Titular();
+                esInvalido = false;
+                await ConfirmarVolver(); //solo si se pudo agregar en la BD salta el mensaje
+            }
+            catch(Exception e){
+                mensaje = e.Message;
+                esInvalido = true;
+            }
+        } else {
+            try {
+                ModificarTitularUseCase.Ejecutar(titular);
+                Navegador.NavigateTo("titulares");
+            }
+            catch(Exception e){
+                esInvalido = true;
+                mensaje = e.Message;
+            }
         }
-        catch(Exception e){
-            mensaje = e.Message;
-            esInvalido = true;
-        }
+
     }
 
 
     private async Task ConfirmarVolver()
     {
-        dialogo.Mensaje = $"se ha agregado correctamente el titular";
+        dialogo.Mensaje = "se ha agregado correctamente el titular";
         await dialogo.Mostrar(true);
     }
     private void Volver()
     {
-        Navegador.NavigateTo("listadotitulares");
+        Navegador.NavigateTo("titulares");
     }
 
 }

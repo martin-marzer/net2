@@ -1,84 +1,75 @@
-@page "/titulares"
+@page "/vehiculos"
 @inject NavigationManager Navegador;
-@inject ListarTitularesUseCase ListarTitularesUseCase
-@inject EliminarTitularUseCase EliminarTitularUseCase
+@inject ListarVehiculosUseCase ListarVehiculosUseCase
+@inject EliminarVehiculoUseCase EliminarVehiculoUseCase
 
 
 
-<PageTitle>Titulares</PageTitle>
+<PageTitle>Vehiculos</PageTitle>
 
-<div>
+<div style="overflow-x:@(!tieneElementos ? "hidden" : "scroll");">
     <DialogoConfirmacion @ref="dialogo" OnConfirmado="Eliminar"/>
     <button type="button" style="background-color:#549539;border-radius: 0.5rem;">
-        <a href="/titular" style="text-decoration: none;color: white;display: flex;justify-content: space-around;align-items: baseline; padding: 0.5rem 0.2rem;width: 10rem;">
-            <p style="margin: 0;">Agregar Titular</p> <span class="oi oi-plus" style="color: white;"></span>
+        <a href="/vehiculo" style="text-decoration: none;color: white;display: flex;justify-content: space-around;align-items: baseline; padding: 0.5rem 0.2rem;width: 10rem;">
+            <p style="margin: 0;">Agregar Vehiculo</p> <span class="oi oi-plus" style="color: white;"></span>
         </a>
     </button>
     
-
-     @if (!tieneElementos) {
-        <table id="table" class="table">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>DNI</th>
-                    <th>NOMBRE</th>
-                    <th>APELLIDO</th>
-                    <th>EMAIL</th>
-                    <th>TELEFONO</th>
-                    <th>ACCIÓN</th>    
-                </tr>
-            </thead>
-        </table>
-            <p>No hay elementos</p>
-     } else {
-        <table id="table" class="table">
-            <thead>
-                <tr>
+    <table id="table" class="table">
+        <thead>
+            <tr>
+                @if (tieneElementos){
                     <th>ID
                         <button @onclick='() => OrdenarPorCampo("ID")' style="background-color: white;border: none;padding: 0;"> 
                             <span class="oi oi-chevron-bottom"></span>
                         </button> 
                     </th>
-                    <th>DNI
-                        <button @onclick='() => OrdenarPorCampo("Dni")' style="background-color: white;border: none;padding: 0;"> 
+                    <th>DOMINIO
+                        <button @onclick='() => OrdenarPorCampo("Dominio")' style="background-color: white;border: none;padding: 0;"> 
                             <span class="oi oi-chevron-bottom"></span>
                         </button> 
                     </th>
-                    <th>NOMBRE</th>
-                    <th>APELLIDO
-                        <button @onclick='() => OrdenarPorCampo("Apellido")' style="background-color: white;border: none;padding: 0;"> 
+
+                    <th>MARCA
+                        <button @onclick='() => OrdenarPorCampo("Marca")' style="background-color: white;border: none;padding: 0;"> 
                             <span class="oi oi-chevron-bottom"></span>
                         </button> 
                     </th>
-                    <th>EMAIL
-                        <button @onclick='() => OrdenarPorCampo("Email")' style="background-color: white;border: none;padding: 0;"> 
+                    <th>AÑO DE FABRICACION
+                        <button @onclick='() => OrdenarPorCampo("AnioFabricacion")' style="background-color: white;border: none;padding: 0;"> 
                             <span class="oi oi-chevron-bottom"></span>
                         </button> 
                     </th>
-                    <th>TELEFONO</th>
                     <th>ACCIÓN</th>
-                </tr>
-            </thead>
-            <tbody>
-            @foreach (var titular in lista)
+                } else {
+                    <th>ID</th>
+                    <th>DOMINIO</th>
+                    <th>MARCA</th>
+                    <th>AÑO DE FABRICACION</th>
+                    <th>ACCIÓN</th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+        @if (!tieneElementos) {
+            <p>No hay elementos</p>
+        } else {
+            @foreach (var vehiculo in lista)
             {
                 <tr>
-                    <td>@titular.ID</td>
-                    <td>@titular.Dni</td>
-                    <td>@titular.Nombre</td>
-                    <td>@titular.Apellido</td>
-                    <td>@titular.Email</td>
-                    <td>@titular.Telefono</td>
+                    <td>@vehiculo.ID</td>
+                    <td>@vehiculo.Dominio</td>
+                    <td>@vehiculo.Marca</td>
+                    <td>@vehiculo.AnioFabricacion</td>
                     <td>
-                        <button class="btn btn-primary" @onclick="()=>ModificarTitular(titular)"> 
+                        <button class="btn btn-primary" @onclick="()=>ModificarVehiculo(vehiculo)"> 
                             <span class="oi oi-pencil"></span>
                         </button>
-                        <button class="btn btn-danger"  @onclick="()=>ConfirmarEliminacion(titular)">
+                        <button class="btn btn-danger"  @onclick="()=>ConfirmarEliminacion(vehiculo)">
                             <span class="oi oi-trash"></span>
                         </button>
 
-                    @if (titular.Vehiculos.Count > 0){
+                    @* @if (vehiculo.Vehiculos.Count > 0){
                         <button class="btn btn-primary" @onclick="Mostrar" >Lista de Vehiculos</button>
                         @if (visible) {
                             <div class="dialogo-contenedor">
@@ -93,7 +84,7 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach (var vehiculo in titular.Vehiculos)
+                                            @foreach (var vehiculo in vehiculo.Vehiculos)
                                             {
                                                 <tr>
                                                     <td>@vehiculo.Dominio</td>
@@ -106,15 +97,13 @@
                                 </div>
                             </div>
                         }
-                    }
+                    } *@
                     </td>
                 </tr>
             }
-            </tbody>
-        </table>
-
-     }
-
+        }
+        </tbody>
+    </table>
 
 
 </div>
@@ -122,33 +111,39 @@
 
 
 @code {
-    List<Titular> lista = new List<Titular>();
+    List<Vehiculo> lista = new List<Vehiculo>();
     bool tieneElementos = false;
     protected override void OnInitialized()
     {
-        lista = ListarTitularesUseCase.Ejecutar();
-        if(lista.Count > 0) tieneElementos = true;
+        lista = ListarVehiculosUseCase.Ejecutar();
     }
 
-    void ModificarTitular(Titular titular)
+    protected override void OnParametersSet()
     {
-        Navegador.NavigateTo($"titular/{titular.ID}");
+        if(lista.Count > 0) 
+        {
+            tieneElementos = true;
+        }
+    }
+
+    void ModificarVehiculo(Vehiculo vehiculo)
+    {
+        Navegador.NavigateTo($"vehiculo/{vehiculo.ID}");
     }
     
     DialogoConfirmacion dialogo = null!;
-    Titular? titularParaEliminar = null;
-    private async Task ConfirmarEliminacion(Titular titular)
+    Vehiculo? vehiculoParaEliminar = null;
+    private async Task ConfirmarEliminacion(Vehiculo vehiculo)
     {
-        titularParaEliminar = titular;
-        dialogo.Mensaje = $"va a eliminar el titular {titular.Apellido} {titular.Nombre}";;
+        vehiculoParaEliminar = vehiculo;
+        dialogo.Mensaje = $"va a eliminar el vehiculo {vehiculo.Dominio} {vehiculo.Marca}";;
         await dialogo.Mostrar(false);
     }
     private void Eliminar()
         {
-        if (titularParaEliminar != null) {
-            EliminarTitularUseCase.Ejecutar(titularParaEliminar.ID);
-            lista = ListarTitularesUseCase.Ejecutar(); //se actualiza la lista de titulares
-            if(lista.Count == 0)tieneElementos = false;
+        if (vehiculoParaEliminar != null) {
+            EliminarVehiculoUseCase.Ejecutar(vehiculoParaEliminar.ID);
+            lista = ListarVehiculosUseCase.Ejecutar(); //se actualiza la lista de vehiculos
         }
     }
      
@@ -182,23 +177,23 @@
                 else
                     lista = lista.OrderByDescending(e => e.ID).ToList();
                 break;
-            case "Dni":
+            case "Dominio":
                 if (ordenAscendente)
-                    lista = lista.OrderBy(e => e.Dni).ToList();
+                    lista = lista.OrderBy(e => e.Dominio).ToList();
                 else
-                    lista = lista.OrderByDescending(e => e.Dni).ToList();
+                    lista = lista.OrderByDescending(e => e.Dominio).ToList();
                 break;
-            case "Apellido":
+            case "Marca":
                 if (ordenAscendente)
-                    lista = lista.OrderBy(e => e.Apellido).ToList();
+                    lista = lista.OrderBy(e => e.Marca).ToList();
                 else
-                    lista = lista.OrderByDescending(e => e.Apellido).ToList();
+                    lista = lista.OrderByDescending(e => e.Marca).ToList();
                 break;
-            case "Email":
+            case "AnioFabricacion":
                 if (ordenAscendente)
-                    lista = lista.OrderBy(e => e.Email).ToList();
+                    lista = lista.OrderBy(e => e.AnioFabricacion).ToList();
                 else
-                    lista = lista.OrderByDescending(e => e.Email).ToList();
+                    lista = lista.OrderByDescending(e => e.AnioFabricacion).ToList();
                 break;
             // Otros casos para más campos de ordenación
         }

@@ -1,10 +1,20 @@
 using Aseguradora.Aplicacion.Entidades;
 using Aseguradora.Aplicacion.Interfaces;
 
+using Microsoft.EntityFrameworkCore;
+
 namespace Aseguradora.Repositorios;
 
 public class RepositorioTitular : IRepositorioTitular
 {    
+    public Titular? ObtenerTitular(int ID)
+    {
+        using (var context = new AseguradoraContext())
+        {
+            var titular = context.Titulares.SingleOrDefault(t => t.ID == ID);
+            return titular;
+        }
+    }
     public void AgregarTitular(Titular titular)
     {
         using (var context = new AseguradoraContext())
@@ -22,7 +32,11 @@ public class RepositorioTitular : IRepositorioTitular
         {
             var titularEncontrado = context.Titulares.SingleOrDefault(t => t.ID == titularModificado.ID);
             if (titularEncontrado == null) throw new Exception("lo siento compadre, no existe ese titular, intenta de nuevo ");
-
+            
+            if (titularEncontrado.Dni != titularModificado.Dni){
+                if (context.Titulares.Any(t => t.Dni == titularModificado.Dni)) throw new Exception("error: probablemente ya existe ese titular");
+            }
+            
             titularEncontrado.Dni = titularModificado.Dni;
             titularEncontrado.Apellido = titularModificado.Apellido;
             titularEncontrado.Nombre = titularModificado.Nombre;
@@ -49,8 +63,7 @@ public class RepositorioTitular : IRepositorioTitular
     {
         using (var context = new AseguradoraContext())
         {
-            var listaTitulares = context.Titulares.ToList();
-            return listaTitulares;
+            return context.Titulares.Include(t => t.Vehiculos).ToList();
         }
     }
 

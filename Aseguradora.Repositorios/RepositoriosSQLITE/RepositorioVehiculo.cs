@@ -6,6 +6,14 @@ namespace Aseguradora.Repositorios;
 
 public class RepositorioVehiculo : IRepositorioVehiculo
 {    
+    public Vehiculo? ObtenerVehiculo(int ID)
+    {
+        using (var context = new AseguradoraContext())
+        {
+            var vehiculo = context.Vehiculos.SingleOrDefault(v => v.ID == ID);
+            return vehiculo;
+        }
+    }
     public void AgregarVehiculo(Vehiculo vehiculo)
     {
         using (var context = new AseguradoraContext())

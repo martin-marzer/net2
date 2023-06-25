@@ -1,0 +1,133 @@
+@page "/vehiculo/{Id:int?}"
+@inject ObtenerVehiculoUseCase ObtenerVehiculoUseCase
+@inject ModificarVehiculoUseCase ModificarVehiculoUseCase
+@inject NavigationManager Navegador;
+@inject AgregarVehiculoUseCase AgregarVehiculoUseCase
+
+<PageTitle>Vehiculo</PageTitle>
+
+ <div>
+    <a href="/vehiculos" style="text-decoration: none;color: black;">
+            <span class="oi oi-arrow-thick-left"></span>
+    </a>
+
+    @if (esNuevoVehiculo)
+    {
+        <h3>Agregando un nuevo Vehiculo</h3>
+        <DialogoConfirmacion @ref="dialogo" OnConfirmado="Volver"/>
+    }
+    else
+    {
+        <h3>Modificando al Vehiculo "@vehiculo.Dominio"</h3>
+        <DialogoConfirmacion @ref="dialogo" />
+    }
+
+    <EditForm Model="vehiculo" OnValidSubmit="Aceptar" class="col-md-10">
+        <DataAnnotationsValidator/>
+
+        <div class="row">
+            <div class="form-group col-md-6">
+                <label for="dominio" class="col-md-2 col-form-label">Dominio:</label>
+                <div class="col-md-10">
+                    <InputText id="dominio" placeholder="AAA123" class="form-control" @bind-Value="vehiculo.Dominio" />
+                    <ValidationMessage For="@(() => vehiculo.Dominio)" />
+                </div>
+            </div>
+
+            <div class="form-group col-md-6">
+                <label for="marca" class="col-md-2 col-form-label">Marca:</label>
+                <div class="col-md-10">
+                    <InputText id="marca" placeholder="Ferarri" class="form-control" @bind-Value="vehiculo.Marca" />
+                    <ValidationMessage For="@(() => vehiculo.Marca)" />
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group col-md-6">
+                <label for="anioFabricacion" class="col-md-2 col-form-label">Año de fabricacion:</label>
+                <div class="col-md-10">
+                    <InputNumber id="anioFabricacion" placeholder="2000"  class="form-control"   @bind-Value="vehiculo.AnioFabricacion" />
+                    <ValidationMessage For="@(() => vehiculo.AnioFabricacion)" />
+                </div>
+            </div>
+
+            <div class="form-group col-md-6">
+                <label for="titularId" class="col-md-2 col-form-label">titularId:</label>
+                <div class="col-md-10">
+                    <InputNumber id="titularId" placeholder="2"  class="form-control"   @bind-Value="vehiculo.TitularId" />
+                    <ValidationMessage For="@(() => vehiculo.TitularId)" />
+                </div>
+            </div>
+        </div>
+
+        
+        <button style="margin-top: 1rem;" class="btn btn-primary" type="submit" >Aceptar </button>
+    </EditForm>
+
+    @if (esInvalido){
+         <p style="color:red" >@mensaje</p>
+    }
+    
+</div> 
+
+@code {
+    Vehiculo vehiculo = new Vehiculo();
+
+    [Parameter] 
+    public int? Id { get; set; }
+    bool esNuevoVehiculo=true;
+    protected override void OnParametersSet()
+    {
+        if (Id != null) {
+            var vehiculo_hallado = ObtenerVehiculoUseCase.Ejecutar(Id.Value);
+            if (vehiculo_hallado != null)
+            {
+                vehiculo = vehiculo_hallado;
+                esNuevoVehiculo=false;
+            }
+        }
+    }
+
+
+    bool esInvalido = false;
+    string mensaje = "";
+    DialogoConfirmacion dialogo = null!;
+    private async Task Aceptar()
+    {
+        if(esNuevoVehiculo) {
+            try {
+                AgregarVehiculoUseCase.Ejecutar(vehiculo);
+                vehiculo = new Vehiculo();
+                esInvalido = false;
+                await ConfirmarVolver(); //solo si se pudo agregar en la BD salta el mensaje
+            }
+            catch(Exception e){
+                mensaje = e.Message;
+                esInvalido = true;
+            }
+        } else {
+            try {
+                ModificarVehiculoUseCase.Ejecutar(vehiculo);
+                Navegador.NavigateTo("vehiculos");
+            }
+            catch(Exception e){
+                esInvalido = true;
+                mensaje = e.Message;
+            }
+        }
+
+    }
+
+
+    private async Task ConfirmarVolver()
+    {
+        dialogo.Mensaje = "se ha agregado correctamente el vehiculo";
+        await dialogo.Mostrar(true);
+    }
+    private void Volver()
+    {
+        Navegador.NavigateTo("vehiculos");
+    }
+
+}

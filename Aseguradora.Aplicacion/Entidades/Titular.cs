@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 public class Titular : Persona{ 
     [Required(ErrorMessage = "La direccion es obligatoria")]    
-    [StringLength(25, MinimumLength = 10, ErrorMessage = "Debes poner una direccion Valida")]
+    [StringLength(25, MinimumLength = 5, ErrorMessage = "Debes poner una direccion Valida")]
     public string? Direccion {get; set;}
 
     [Required(ErrorMessage = "El email es obligatorio")]
